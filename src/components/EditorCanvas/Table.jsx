@@ -64,7 +64,9 @@ export default function Table(props) {
 
   const lockUnlockTable = () => {
     setBulkSelectedElements((prev) =>
-      prev.filter((el) => el.id !== tableData.id || el.type !== ObjectType.TABLE),
+      prev.filter(
+        (el) => el.id !== tableData.id || el.type !== ObjectType.TABLE,
+      ),
     );
     updateTable(tableData.id, { locked: !tableData.locked });
   };
@@ -100,7 +102,7 @@ export default function Table(props) {
         y={tableData.y}
         width={settings.tableWidth}
         height={height}
-        className="group drop-shadow-lg rounded-md cursor-move"
+        className="rounded-md cursor-move group drop-shadow-lg"
         onPointerDown={onPointerDown}
       >
         <div
@@ -178,7 +180,7 @@ export default function Table(props) {
                                     : "bg-zinc-800"
                                 }`}
                               >
-                                <i className="fa-solid fa-thumbtack me-2 mt-1 text-slate-500"></i>
+                                <i className="mt-1 fa-solid fa-thumbtack me-2 text-slate-500"></i>
                                 <div>
                                   {index.fields.map((f) => (
                                     <Tag color="blue" key={f} className="me-1">
@@ -227,10 +229,10 @@ export default function Table(props) {
                 content={
                   <div className="popover-theme">
                     <div
-                      className="flex justify-between items-center pb-2"
+                      className="flex items-center justify-between pb-2"
                       style={{ direction: "ltr" }}
                     >
-                      <p className="me-4 font-bold">{e.name}</p>
+                      <p className="font-bold me-4">{e.name}</p>
                       <p
                         className={
                           "ms-4 font-mono " + dbToTypes[database][e.type].color
@@ -247,22 +249,22 @@ export default function Table(props) {
                     </div>
                     <hr />
                     {e.primary && (
-                      <Tag color="blue" className="me-2 my-2">
+                      <Tag color="blue" className="my-2 me-2">
                         {t("primary")}
                       </Tag>
                     )}
                     {e.unique && (
-                      <Tag color="amber" className="me-2 my-2">
+                      <Tag color="amber" className="my-2 me-2">
                         {t("unique")}
                       </Tag>
                     )}
                     {e.notNull && (
-                      <Tag color="purple" className="me-2 my-2">
+                      <Tag color="purple" className="my-2 me-2">
                         {t("not_null")}
                       </Tag>
                     )}
                     {e.increment && (
-                      <Tag color="green" className="me-2 my-2">
+                      <Tag color="green" className="my-2 me-2">
                         {t("autoincrement")}
                       </Tag>
                     )}
@@ -396,12 +398,13 @@ export default function Table(props) {
               onClick={() => deleteField(fieldData, tableData.id)}
             />
           ) : settings.showDataTypes ? (
-            <div className="flex gap-1 items-center">
+            <div className="flex items-center gap-1">
               {fieldData.primary && <IconKeyStroked />}
               {!fieldData.notNull && <span className="font-mono">?</span>}
               <span
                 className={
-                  "font-mono " + dbToTypes[database][fieldData.type].color
+                  "font-mono text-xs " +
+                  dbToTypes[database][fieldData.type].color
                 }
               >
                 {fieldData.type +
