@@ -1,9 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { Action, DB, ObjectType, defaultBlue } from "../data/constants";
 import { useTransform, useUndoRedo, useSelect } from "../hooks";
 import { Toast } from "@douyinfe/semi-ui";
 import { useTranslation } from "react-i18next";
 import { nanoid } from "nanoid";
+import { microBridge } from "../utils/microapp-bridge";
 
 export const DiagramContext = createContext(null);
 
@@ -15,6 +16,60 @@ export default function DiagramContextProvider({ children }) {
   const { transform } = useTransform();
   const { setUndoStack, setRedoStack } = useUndoRedo();
   const { selectedElement, setSelectedElement } = useSelect();
+
+  // 微前端通信相关逻辑
+  useEffect(() => {
+    if (window.__POWERED_BY_QIANKUN__) {
+      // 监听来自主应用的导入数据事件
+      microBridge.onParentEvent('drawdb-import', (importData) => {
+        if (importData && importData.diagram) {
+          const { diagram } = importData;
+          console.log('[DrawDB] 收到导入数据:', diagram);
+          
+          if (diagram.tables) setTables(diagram.tables);
+          if (diagram.relationships) setRelationships(diagram.relationships);
+          if (diagram.database) setDatabase(diagram.database);
+          
+          Toast.success(t('data_imported') || '数据导入成功');
+        }
+      });
+
+      // 监听导出数据请求
+      microBridge.onParentEvent('drawdb-export-request', () => {
+        const diagramData = {
+          tables,
+          relationships,
+          database,
+          timestamp: Date.now()
+        };
+        microBridge.exportData(diagramData);
+      });
+
+      // 发送准备就绪信号
+      setTimeout(() => {
+        microBridge.ready();
+      }, 1000);
+
+      // 清理函数
+      return () => {
+        microBridge.offParentEvent('drawdb-import');
+        microBridge.offParentEvent('drawdb-export-request');
+      };
+    }
+  }, [tables, relationships, database, t]);
+
+  // 数据变化时通知主应用
+  useEffect(() => {
+    if (window.__POWERED_BY_QIANKUN__ && (tables.length > 0 || relationships.length > 0)) {
+      const diagramData = {
+        tables,
+        relationships,
+        database,
+        timestamp: Date.now()
+      };
+      microBridge.dataChange(diagramData);
+    }
+  }, [tables, relationships, database]);
 
   const addTable = (data, addToHistory = true) => {
     const id = nanoid();

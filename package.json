@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:micro": "vite --mode=micro",
     "start": "vite build && vite preview",
     "build": "vite build",
+    "build:micro": "vite build --mode=micro",
+    "preview:micro": "vite preview --mode=micro",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -47,6 +50,7 @@
     "nanoid": "^5.1.5",
     "node-sql-parser": "^5.3.10",
     "oracle-sql-parser": "^0.1.0",
+    "qiankun": "^2.10.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^4.4.1",

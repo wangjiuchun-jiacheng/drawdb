@@ -17,7 +17,7 @@ const defaultSettings = {
 
 export const SettingsContext = createContext(defaultSettings);
 
-export default function SettingsContextProvider({ children }) {
+export default function SettingsContextProvider({ children, microProps }) {
   const [settings, setSettings] = useState(defaultSettings);
 
   useEffect(() => {
