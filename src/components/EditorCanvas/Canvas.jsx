@@ -377,6 +377,7 @@ export default function Canvas() {
 
     const isMouseLeftButton = e.button === 0;
     const isMouseMiddleButton = e.button === 1;
+    const isMouseRightButton = e.button === 2;
 
     if (isMouseLeftButton) {
       setBulkSelectRectPts({
@@ -387,7 +388,7 @@ export default function Canvas() {
         show: true,
       });
       pointer.setStyle("crosshair");
-    } else if (isMouseMiddleButton) {
+    } else if (isMouseMiddleButton || isMouseRightButton) {
       setPanning({
         isPanning: true,
         panStart: transform.pan,
@@ -609,6 +610,7 @@ export default function Canvas() {
     { passive: false },
   );
 
+
   return (
     <div className="grow h-full touch-none" id="canvas">
       <div
@@ -624,6 +626,7 @@ export default function Canvas() {
           onPointerMove={handlePointerMove}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
+          onContextMenu={(e) => e.preventDefault()}
           className="absolute w-full h-full touch-none"
           viewBox={`${viewBox.left} ${viewBox.top} ${viewBox.width} ${viewBox.height}`}
         >
